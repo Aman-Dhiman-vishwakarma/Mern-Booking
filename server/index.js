@@ -1,11 +1,15 @@
 require('dotenv').config()
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const server = express();
 
 server.use(express.json());
 const cors = require('cors');
 server.use(cors())
+server.use(express.urlencoded({extended: true}));
+server.use(cookieParser())
+const authrouter = require("./routes/auth.route");
 
 
 
@@ -17,9 +21,12 @@ async function main() {
 }
 
 
-server.get('/', (req, res)=>{
-    res.json({"messege":"ok aman"})
-})
+server.use("/auth", authrouter.authroutes)
+
+
+
+
+
 server.listen(process.env.PORT, () => {
     console.log('server started')
 })
