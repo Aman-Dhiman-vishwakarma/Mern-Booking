@@ -20,6 +20,7 @@ server.use(cookieParser())
 const authrouter = require("./routes/auth.route");
 const userrouter = require("./routes/user.route")
 const postrouter = require("./routes/post.route")
+const notificationrouter = require("./routes/notification.route")
 
 
 main().catch(err => console.log(err));
@@ -33,6 +34,7 @@ async function main() {
 server.use("/auth", authrouter.authroutes)
 server.use("/users", userrouter.userroutes)
 server.use("/posts", postrouter.postroutes)
+server.use("/notifications", notificationrouter.notificationroute)
 
 
 server.listen(process.env.PORT, () => {
