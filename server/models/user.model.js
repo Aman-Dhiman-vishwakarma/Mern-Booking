@@ -50,7 +50,14 @@ const userSchema = new Schema({
     link:{
         type: String,
         default: ""
-    }
+    },
+    likedposts:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Post",
+            default: []
+        }
+    ],
 }, {timestamps: true})
 
 exports.User = mongoose.model("user", userSchema)

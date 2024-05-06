@@ -19,6 +19,7 @@ server.use(express.urlencoded({extended: true}));
 server.use(cookieParser())
 const authrouter = require("./routes/auth.route");
 const userrouter = require("./routes/user.route")
+const postrouter = require("./routes/post.route")
 
 
 main().catch(err => console.log(err));
@@ -31,7 +32,7 @@ async function main() {
 
 server.use("/auth", authrouter.authroutes)
 server.use("/users", userrouter.userroutes)
-
+server.use("/posts", postrouter.postroutes)
 
 
 server.listen(process.env.PORT, () => {
