@@ -8,8 +8,8 @@ import { IoCalendarOutline } from "react-icons/io5";
 import { FaLink } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { usersProfileInfo } from "../../store/profileSlice";
-import { usersPosts } from "../../store/allPostsSlice";
+import { followunfollouser, updateuser, usersProfileInfo } from "../../store/profileSlice";
+import { likepost, usersPosts } from "../../store/allPostsSlice";
 
 const ProfilePage = () => {
 	const [coverImg, setCoverImg] = useState(null);
@@ -22,26 +22,19 @@ const ProfilePage = () => {
 	const {allpostsdata, isLoading} = useSelector(state=>state.allposts)
 	const coverImgRef = useRef(null);
 	const profileImgRef = useRef(null);
-	// const isLoading = false;
-	// const isMyProfile = false
+	
 	useEffect(()=>{
         dispatch(usersProfileInfo(username))
-		dispatch(usersPosts(username))
-	}, [ dispatch, username])
+		if(feedType === "posts"){
+			dispatch(usersPosts(username))
+		}else{
+			dispatch(likepost(userprofiledata?._id))
+		}
+		
+	}, [ dispatch, username, feedType])
      
     const user = userprofiledata;
-	
-	// const user = {
-	// 	_id: "1",
-	// 	fullname: "Aman Dhiman",
-	// 	username: "aman",
-	// 	profileImg:  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHVOZOsldxI9sNV6SljAakm7UpPZZ44SGTyg&s",
-	// 	coverImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHVOZOsldxI9sNV6SljAakm7UpPZZ44SGTyg&s",
-	// 	bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-	// 	link: "https://youtube.com/@asaprogrammer_",
-	// 	following: ["1", "2", "3"],
-	// 	followers: ["1", "2", "3"],
-	// };
+	const okfollow = userprofiledata?.followers.includes(logedinUser?._id)
 
 	const handleImgChange = (e, state) => {
 		const file = e.target.files[0];
@@ -54,6 +47,11 @@ const ProfilePage = () => {
 			reader.readAsDataURL(file);
 		}
 	};
+
+    const updateuserprofile = () => {
+		console.log("chl ra hai")
+		dispatch(updateuser({profileImg, coverImg}))
+	}
 
 	return (
 		<>
@@ -123,15 +121,15 @@ const ProfilePage = () => {
 								{(logedinUser?._id !== user?._id) && (
 									<button
 										className='btn btn-outline rounded-full btn-sm'
-										onClick={() => alert("Followed successfully")}
+										onClick={() => {dispatch(followunfollouser(user?._id))}}
 									>
-										Follow
+										{okfollow ? "Following" : "Follow"}
 									</button>
 								)}
 								{(coverImg || profileImg) && (
 									<button
 										className='btn btn-primary rounded-full btn-sm text-white px-4 ml-2'
-										onClick={() => alert("Profile updated successfully")}
+										onClick={updateuserprofile}
 									>
 										Update
 									</button>
@@ -184,7 +182,7 @@ const ProfilePage = () => {
 								>
 									Posts
 									{feedType === "posts" && (
-										<div className='absolute bottom-0 w-10 h-1 rounded-full bg-primary' ></div>
+										<div className='absolute bottom-0 w-full h-1 rounded-full bg-primary' ></div>
 									)}
 								</div>
 								<div
@@ -193,7 +191,7 @@ const ProfilePage = () => {
 								>
 									Likes
 									{feedType === "likes" && (
-										<div className='absolute bottom-0 w-10  h-1 rounded-full bg-primary'>likes</div>
+										<div className='absolute bottom-0 w-full  h-1 rounded-full bg-primary'></div>
 									)}
 								</div>
 							</div>

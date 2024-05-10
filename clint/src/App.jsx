@@ -31,8 +31,8 @@ function App() {
         <Route path='/' element={(logedinUser?.messege === "Unauthorised" || logedinUser == null) ? <SignUp /> : <HomePage />} />
         <Route path='/login' element={logedinUser?.messege === "Unauthorised" ? <Login /> : <Navigate to="/"></Navigate>} />
         <Route path='/signup' element={logedinUser?.messege === "Unauthorised" ? <SignUp /> : <Navigate to="/"></Navigate>} />
-        <Route path='/notifications' element={logedinUser?.messege !== "Unauthorised" ? <NotificationPage /> : <Navigate to="/signup"></Navigate>} />
-        <Route path='/profile/:username' element={logedinUser?.messege !== "Unauthorised" ? <ProfilePage /> : <Navigate to="/signup"></Navigate>} />
+        <Route path='/notifications' element={(logedinUser?.messege === "Unauthorised" || logedinUser == null) ? <SignUp /> : <NotificationPage />} />
+        <Route path='/profile/:username' element={(logedinUser?.messege === "Unauthorised" || logedinUser == null) ? <SignUp /> : <ProfilePage />} />
       </Routes>
       {(logedinUser?.messege === "Unauthorised" || logedinUser == null) ? "" : <RightPanel />}
      </div>

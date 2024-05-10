@@ -22,7 +22,7 @@ exports.getUserProfile =  async (req, res) => {
 exports.followUnfollowUser = async (req, res) => {
     try {
         const {id} = req.params;
-        const userToModify = await User.findById(id);
+        const userToModify = await User.findById(id).select("-password");
         const currentUser = await User.findById(req.user._id)
 
         if(id == req.user._id){
@@ -39,7 +39,11 @@ exports.followUnfollowUser = async (req, res) => {
         //unfollow user
         await User.findByIdAndUpdate(id, {$pull: { followers: req.user._id}})
         await User.findByIdAndUpdate(req.user._id, {$pull: { following: id}}) 
-        res.status(200).json({messege: "user unfollow successgully"}); 
+
+        const updatefollower = userToModify.followers.filter((id) => id.toString() !== req.user._id.toString());
+        // const updatefollower = userToModify.followers.filter(id=>id !== req.user._id);
+        userToModify.followers = updatefollower
+        res.status(200).json(userToModify); 
         }else{
         //follow user
          await User.findByIdAndUpdate(id, {$push: { followers: req.user._id}})
@@ -51,7 +55,9 @@ exports.followUnfollowUser = async (req, res) => {
             to: userToModify._id
         }) 
         await newnotification.save();
-         res.status(200).json({messege: "user followed successgully"}); 
+
+        userToModify.followers.push(req.user._id)
+         res.status(200).json(userToModify); 
        
         }
     } catch (error) {

@@ -31,6 +31,15 @@ export const logedinUserInfo = createAsyncThunk("logedinUserInfo", async () => {
     return responce.json();
 })
 
+// export const updateuser = createAsyncThunk("updateuser", async (userdata) => {
+//   const responce = await fetch("/api/users/update", {
+//       method:'POST',
+//       body: JSON.stringify(userdata),
+//       headers:{'content-type':'application/json'}
+//   });
+//   return responce.json();
+// })
+
 const authSlice = createSlice({
     name: "auth",
     initialState:{
@@ -69,9 +78,15 @@ const authSlice = createSlice({
             if(action.payload.messege === "Logout"){
               state.logedinUser = null;
               state.loginsignupstatus = null;
-            }
-            
+            } 
           })  
+          // .addCase(updateuser.pending, (state, action) => {
+          //   state.isLoading = false;
+          // })
+          // .addCase(updateuser.fulfilled, (state, action) => {
+          //   state.isLoading = false;
+          //   state.logedinUser = action.payload;
+          // })  
     }
 })
 

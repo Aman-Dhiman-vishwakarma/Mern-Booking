@@ -49,6 +49,12 @@ export const followingposts = createAsyncThunk("followingposts", async () => {
   return responce.json();
 })
 
+export const likepost = createAsyncThunk("likepost", async (userdata) => {
+  const responce = await fetch("/api/posts//likepost/"+userdata);
+  return responce.json();
+})
+
+
 const allPostSlice = createSlice({
     name: "allposts",
     initialState: {
@@ -106,6 +112,13 @@ const allPostSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(followingposts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.allpostsdata = action.payload
+      })
+      .addCase(likepost.pending, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(likepost.fulfilled, (state, action) => {
         state.isLoading = false;
         state.allpostsdata = action.payload
       })
