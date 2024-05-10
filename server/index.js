@@ -31,10 +31,10 @@ async function main() {
 }
 
 
-server.use("/auth", authrouter.authroutes)
-server.use("/users", userrouter.userroutes)
-server.use("/posts", postrouter.postroutes)
-server.use("/notifications", notificationrouter.notificationroute)
+server.use("/api/auth", authrouter.authroutes)
+server.use("/api/users", userrouter.userroutes)
+server.use("/api/posts", postrouter.postroutes)
+server.use("/api/notifications", notificationrouter.notificationroute)
 
 
 server.listen(process.env.PORT, () => {

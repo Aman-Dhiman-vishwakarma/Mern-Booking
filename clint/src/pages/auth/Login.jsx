@@ -1,19 +1,23 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 import XSvg from "../../components/svgs/XSvg";
 
 import { MdOutlineMail } from "react-icons/md";
 import { MdPassword } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../store/authSlice";
 const Login = () => {
-
     const [formData, setFormData] = useState({
 		username: "",
 		password: "",
 	});
+   const {loginsignupstatus, isLoading, logedinUser} = useSelector(state=>state.auth)
+   const dispatch = useDispatch()
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
+		dispatch(loginUser(formData))
 		console.log(formData);
 	};
 
@@ -25,6 +29,7 @@ const Login = () => {
 
   return (
     <>
+	{logedinUser?.messege !== "Unauthorised"  && <Navigate to="/"></Navigate>}
     <div className='max-w-screen-xl mx-auto flex h-screen'>
 			<div className='flex-1 hidden lg:flex items-center  justify-center'>
 				<XSvg className='lg:w-2/3 fill-white' />
@@ -56,7 +61,7 @@ const Login = () => {
 							value={formData.password}
 						/>
 					</label>
-					<button className='btn rounded-full btn-primary text-white'>Login</button>
+					<button className='btn rounded-full btn-primary text-white'>{isLoading ? "Loding..." : "Login" }</button>
 					{isError && <p className='text-red-500'>Something went wrong</p>}
 				</form>
 				<div className='flex flex-col gap-2 mt-4'>

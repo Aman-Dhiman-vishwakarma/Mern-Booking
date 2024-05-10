@@ -3,10 +3,14 @@ import { CiImageOn } from "react-icons/ci";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import { useRef, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
+import { createpost } from "../../store/allPostsSlice";
 
 const CreatePost = () => {
 	const [text, setText] = useState("");
 	const [img, setImg] = useState(null);
+	const dispatch = useDispatch();
+	const {isLoading} = useSelector(state=>state.allposts)
 
 	const imgRef = useRef(null);
 
@@ -19,7 +23,9 @@ const CreatePost = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		alert("Post created successfully");
+		dispatch(createpost({text, img}))
+		setText("");
+		setImg(null);
 	};
 
 	const handleImgChange = (e) => {
@@ -72,7 +78,7 @@ const CreatePost = () => {
 					</div>
 					<input type='file' accept="image/*" hidden ref={imgRef} onChange={handleImgChange} />
 					<button className='btn btn-primary rounded-full btn-sm text-white px-4'>
-						{isPending ? "Posting..." : "Post"}
+						{isLoading ? "Posting..." : "Post"}
 					</button>
 				</div>
 				{isError && <div className='text-red-500'>Something went wrong</div>}

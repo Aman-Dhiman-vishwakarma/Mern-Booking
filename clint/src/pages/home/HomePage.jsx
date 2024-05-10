@@ -1,12 +1,29 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Posts from "../../components/common/Posts";
 import CreatePost from "./CreatePost";
+import { useDispatch, useSelector } from "react-redux";
+import { followingposts, getallPosts } from "../../store/allPostsSlice";
+
 
 const HomePage = () => {
 	const [feedType, setFeedType] = useState("forYou");
+	const {loginsignupstatus, logedinUser} = useSelector(state=>state.auth)
+	const {allpostsdata, isLoading} = useSelector(state=>state.allposts)
+    const dispatch = useDispatch();
+	useEffect(()=>{
+		
+		if(feedType === "forYou"){
+            dispatch(getallPosts())
+			
+		}else{
+			dispatch(followingposts())
+		}
+	
+	},[feedType])
 
+	
 	return (
 		<>
 			<div className='flex-[4_4_0] mr-auto border-r border-gray-700 min-h-screen'>
@@ -20,7 +37,7 @@ const HomePage = () => {
 					>
 						For you
 						{feedType === "forYou" && (
-							<div className='absolute bottom-0 w-10  h-1 rounded-full bg-primary'></div>
+							<div className='absolute bottom-0 w-14  h-1 rounded-full bg-primary'></div>
 						)}
 					</div>
 					<div
@@ -29,7 +46,7 @@ const HomePage = () => {
 					>
 						Following
 						{feedType === "following" && (
-							<div className='absolute bottom-0 w-10  h-1 rounded-full bg-primary'></div>
+							<div className='absolute bottom-0 w-16  h-1 rounded-full bg-primary'></div>
 						)}
 					</div>
 				</div>
@@ -38,7 +55,7 @@ const HomePage = () => {
 				<CreatePost />
 
 				{/* POSTS */}
-				<Posts />
+				<Posts POSTS={allpostsdata} isLoading={isLoading}/>
 			</div>
 		</>
 	);

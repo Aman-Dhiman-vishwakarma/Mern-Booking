@@ -4,26 +4,36 @@ import { FaRegHeart } from "react-icons/fa";
 import { FaRegBookmark } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { commentpost, deletepost, likeunlikepost } from "../../store/allPostsSlice";
+import { timeSince } from "../../utils/date";
+
 
 const Post = ({ post }) => {
 	const [comment, setComment] = useState("");
 	const postOwner = post.user;
-	const isLiked = false;
-
+	const dispatch = useDispatch();
+	const params = useParams();
+	const { logedinUser} = useSelector(state=>state.auth)
 	const isMyPost = true;
-
-	const formattedDate = "1h";
-
+	const isLiked = post.likes.includes(logedinUser?._id)
+	
 	const isCommenting = false;
 
-	const handleDeletePost = () => {};
+	const handleDeletePost = () => {
+        dispatch(deletepost(post?._id))
+	};
 
 	const handlePostComment = (e) => {
 		e.preventDefault();
+		dispatch(commentpost({id: post?._id, text:comment}))
+		setComment("")
 	};
 
-	const handleLikePost = () => {};
+	const handleLikePost = () => {
+		dispatch(likeunlikepost(post?._id))
+	};
 
 	return (
 		<>
@@ -36,14 +46,14 @@ const Post = ({ post }) => {
 				<div className='flex flex-col flex-1'>
 					<div className='flex gap-2 items-center'>
 						<Link to={`/profile/${postOwner.username}`} className='font-bold'>
-							{postOwner.fullName}
+							{postOwner.fullname}
 						</Link>
-						<span className='text-gray-700 flex gap-1 text-sm'>
+						<span className='text-gray-500 flex gap-1 text-sm'>
 							<Link to={`/profile/${postOwner.username}`}>@{postOwner.username}</Link>
 							<span>·</span>
-							<span>{formattedDate}</span>
+							<span>{timeSince(post.createdAt)}</span>
 						</span>
-						{isMyPost && (
+						{(params?.username && logedinUser?._id === postOwner?._id) && (
 							<span className='flex justify-end flex-1'>
 								<FaTrash className='cursor-pointer hover:text-red-500' onClick={handleDeletePost} />
 							</span>
@@ -91,7 +101,7 @@ const Post = ({ post }) => {
 												</div>
 												<div className='flex flex-col'>
 													<div className='flex items-center gap-1'>
-														<span className='font-bold'>{comment.user.fullName}</span>
+														<span className='font-bold'>{comment.user.fullname}</span>
 														<span className='text-gray-700 text-sm'>
 															@{comment.user.username}
 														</span>
@@ -113,7 +123,7 @@ const Post = ({ post }) => {
 										/>
 										<button className='btn btn-primary rounded-full btn-sm text-white px-4'>
 											{isCommenting ? (
-												<span className='loading loading-spinner loading-md'></span>
+												<span className='loading loading-spinner loading-md'>Loding...</span>
 											) : (
 												"Post"
 											)}

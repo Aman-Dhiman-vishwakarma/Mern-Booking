@@ -1,10 +1,10 @@
 
 import Post from "./Post";
 import PostSkeleton from "../skeletons/PostSkeleton";
-import { POSTS } from "../../utils/db/dummy";
+// import { POSTS } from "../../utils/db/dummy";
 
-const Posts = () => {
-	const isLoading = false;
+const Posts = ({POSTS, isLoading}) => {
+	// const isLoading = false;
 
 	return (
 		<>
@@ -16,10 +16,10 @@ const Posts = () => {
                     <PostSkeleton />
 			    </div>
             )}
-			{!isLoading && POSTS?.length === 0 && <p className='text-center my-4'>No posts in this tab. Switch 👻</p>}
-			{!isLoading && POSTS && (
+			{!isLoading && POSTS?.messege === "noposts" && <p className='text-center my-4'>No posts in this tab. Switch 👻</p>}
+			{!isLoading && !POSTS?.messege && (
 				<div>
-					{POSTS.map((post) => (
+					{POSTS?.map((post) => (
 						<Post key={post._id} post={post} />
 					))}
 				</div>

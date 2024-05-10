@@ -27,6 +27,10 @@ exports.createpost = async (req, res) => {
     });
 
     await newpost.save();
+    await newpost.populate({
+      path: "user",
+      select: "-password",
+    })
     return res.status(200).json(newpost);
   } catch (error) {
     res.status(500).json(error);
@@ -45,12 +49,12 @@ exports.deletepost = async (req, res) => {
         .json({ messege: "you are not authorised to delete this post" });
     }
     if (post.img) {
-      const imgId = await post.img.split("/").pop().split(".")[0];
+      const imgId = post.img.split("/").pop().split(".")[0];
       await cloudinary.uploader.destroy(imgId);
     }
 
-    await Post.findByIdAndDelete(req.params.id);
-    res.status(200).json({ messege: "post deleted successfully" });
+    const deletpost = await Post.findByIdAndDelete(req.params.id);
+    res.status(200).json(deletpost);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -73,8 +77,11 @@ exports.commentOnPost = async (req, res) => {
     }
 
     const comment = { user: userId, text };
-    post.comments.push(comment);
+    post.comments.unshift(comment);
     await post.save();
+
+    await (await post.populate({path: "comments.user", select: "-password",})).populate({path: "user", select: "-password"})
+
     res.status(200).json(post);
   } catch (error) {
     res.status(500).json(error);
@@ -85,7 +92,14 @@ exports.likeUnlikePost = async (req, res) => {
   try {
     const userId = req.user._id;
     const { id: postId } = req.params;
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate({
+      path: "user",
+      select: "-password",
+    })
+    .populate({
+      path: "comments.user",
+      select: "-password",
+    });;
 
     if (!post) {
       return res.status(400).json({ messege: "post not found" });
@@ -97,7 +111,10 @@ exports.likeUnlikePost = async (req, res) => {
       //unlike post
       await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
       await User.updateOne({ _id: userId }, { $pull: { likedposts: postId } });
-      res.status(200).json({ messege: "post unlike successfully" });
+   
+      const updatedLikes = post.likes.filter((id) => id.toString() !== userId.toString());
+      post.likes = updatedLikes
+			res.status(200).json(post);
     } else {
       //like post
       post.likes.push(userId);
@@ -110,7 +127,8 @@ exports.likeUnlikePost = async (req, res) => {
         type: "like",
       });
       await notification.save();
-      res.status(200).json({ messege: "post like successfully" });
+      
+			res.status(200).json(post);
     }
   } catch (error) {
     res.status(500).json(error);
@@ -208,7 +226,7 @@ exports.getUserPosts = async (req, res) => {
       });
 
       if(posts.length == 0){
-        return res.status(400).json({messege: "have a no post create some post"});
+        return res.status(200).json({messege: "noposts"});
       }
       res.status(200).json(posts);
     } catch (error) {

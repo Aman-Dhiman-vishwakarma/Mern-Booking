@@ -7,18 +7,22 @@ import { MdOutlineMail } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { MdPassword } from "react-icons/md";
 import { MdDriveFileRenameOutline } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { signupUser } from "../../store/authSlice";
 
 const SignUp = () => {
-
     const [formData, setFormData] = useState({
 		email: "",
 		username: "",
-		fullName: "",
+		fullname: "",
 		password: "",
 	});
+	const {loginsignupstatus, isLoading} = useSelector(state=>state.auth)
+	const dispatch = useDispatch()
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
+		dispatch(signupUser(formData))
 		console.log(formData);
 	};
 
@@ -67,9 +71,9 @@ const SignUp = () => {
 								type='text'
 								className='grow'
 								placeholder='Full Name'
-								name='fullName'
+								name='fullname'
 								onChange={handleInputChange}
-								value={formData.fullName}
+								value={formData.fullname}
 							/>
 						</label>
 					</div>
