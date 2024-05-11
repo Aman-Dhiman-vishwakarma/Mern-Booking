@@ -28,11 +28,11 @@ function App() {
       {/*This Is a Common Components*/}
       {(logedinUser?.messege === "Unauthorised" || logedinUser == null) ? "" : <Sidebar />}
       <Routes>
-        <Route path='/' element={(logedinUser?.messege === "Unauthorised" || logedinUser == null) ? <SignUp /> : <HomePage />} />
-        <Route path='/login' element={logedinUser?.messege === "Unauthorised" ? <Login /> : <Navigate to="/"></Navigate>} />
-        <Route path='/signup' element={logedinUser?.messege === "Unauthorised" ? <SignUp /> : <Navigate to="/"></Navigate>} />
-        <Route path='/notifications' element={(logedinUser?.messege === "Unauthorised" || logedinUser == null) ? <SignUp /> : <NotificationPage />} />
-        <Route path='/profile/:username' element={(logedinUser?.messege === "Unauthorised" || logedinUser == null) ? <SignUp /> : <ProfilePage />} />
+        <Route path='/' element={(logedinUser?.messege === "Unauthorised" || logedinUser == null) ?  <SignUp /> : <HomePage />} />
+        <Route path='/login' element={ <Login /> } />
+        <Route path='/signup' element={ <SignUp /> } />
+        <Route path='/notifications' element={(logedinUser?.messege === "Unauthorised" || logedinUser == null) ?  <Login /> : <NotificationPage />} />
+        <Route path='/profile/:username' element={(logedinUser?.messege === "Unauthorised" || logedinUser == null) ?  <Login /> : <ProfilePage />} />
       </Routes>
       {(logedinUser?.messege === "Unauthorised" || logedinUser == null) ? "" : <RightPanel />}
      </div>

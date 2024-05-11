@@ -41,9 +41,11 @@ exports.followUnfollowUser = async (req, res) => {
         await User.findByIdAndUpdate(req.user._id, {$pull: { following: id}}) 
 
         const updatefollower = userToModify.followers.filter((id) => id.toString() !== req.user._id.toString());
+        const updatefollowercu = currentUser.following.filter((cuid) => cuid.toString() !== id.toString());
         // const updatefollower = userToModify.followers.filter(id=>id !== req.user._id);
         userToModify.followers = updatefollower
-        res.status(200).json(userToModify); 
+        currentUser.following = updatefollowercu
+        res.status(200).json({userToModify, currentUser}); 
         }else{
         //follow user
          await User.findByIdAndUpdate(id, {$push: { followers: req.user._id}})
@@ -57,7 +59,8 @@ exports.followUnfollowUser = async (req, res) => {
         await newnotification.save();
 
         userToModify.followers.push(req.user._id)
-         res.status(200).json(userToModify); 
+        currentUser.following.push(id)
+         res.status(200).json({userToModify, currentUser}); 
        
         }
     } catch (error) {

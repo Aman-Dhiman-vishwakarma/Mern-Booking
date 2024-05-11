@@ -12,7 +12,7 @@ cloudinary.config({
 
 const server = express();
 
-server.use(express.json());
+server.use(express.json({ limit: "5mb" }));
 const cors = require('cors');
 server.use(cors())
 server.use(express.urlencoded({extended: true}));

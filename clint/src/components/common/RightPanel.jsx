@@ -2,12 +2,13 @@ import { Link } from "react-router-dom";
 import RightPanelSkeleton from "../skeletons/RightPanelSkeleton";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { suggesteduser } from "../../store/profileSlice";
+import { rightbaarfollow, suggesteduser } from "../../store/profileSlice";
 
 const RightPanel = () => {
 	const isLoading = false;
 	const dispatch = useDispatch()
 	const {suggesteduserdata} = useSelector(state=>state.usersprofile)
+    const {logedinUser} = useSelector(state=>state.auth)
 
 
 	useEffect(()=>{
@@ -53,9 +54,14 @@ const RightPanel = () => {
 								<div>
 									<button
 										className='btn bg-white text-black hover:bg-white hover:opacity-90 rounded-full btn-sm'
-										onClick={(e) => e.preventDefault()}
+										onClick={(e) => {
+											e.preventDefault()
+											dispatch(rightbaarfollow(user._id))
+										}
+											
+										}
 									>
-										Follow
+										{user?.followers.includes(logedinUser?._id) ? "Following" : "Follow"}
 									</button>
 								</div>
 							</Link>

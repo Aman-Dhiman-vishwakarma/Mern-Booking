@@ -12,12 +12,8 @@ import { logedout } from "../../store/authSlice";
 const Sidebar = () => {
 	const {loginsignupstatus, isLoading, logedinUser} = useSelector(state=>state.auth)
 	const dispatch = useDispatch()
-	// const data = {
-	// 	fullName: "Aman Dhiman",
-	// 	username: "aman",
-	// 	profileImg: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHVOZOsldxI9sNV6SljAakm7UpPZZ44SGTyg&s",
-	// };
-
+    
+	
 	return (
 		<div className='md:flex-[2_2_0] w-18 max-w-52'>
 			<div className='sticky top-0 left-0 h-screen flex flex-col border-r border-gray-700 w-20 md:w-full'>

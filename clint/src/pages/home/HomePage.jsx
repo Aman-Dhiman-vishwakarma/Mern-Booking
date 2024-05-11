@@ -11,6 +11,7 @@ const HomePage = () => {
 	const [feedType, setFeedType] = useState("forYou");
 	const {loginsignupstatus, logedinUser} = useSelector(state=>state.auth)
 	const {allpostsdata, isLoading} = useSelector(state=>state.allposts)
+	const {userfollowtrue} = useSelector(state=>state.usersprofile)
     const dispatch = useDispatch();
 	useEffect(()=>{
 		
@@ -21,7 +22,7 @@ const HomePage = () => {
 			dispatch(followingposts())
 		}
 	
-	},[feedType])
+	},[feedType, userfollowtrue])
 
 	
 	return (

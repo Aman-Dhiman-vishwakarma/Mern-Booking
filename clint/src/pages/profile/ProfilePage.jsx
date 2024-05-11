@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import Posts from "../../components/common/Posts";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
 import EditProfileModal from "./EditProfileModal";
@@ -18,7 +18,7 @@ const ProfilePage = () => {
 	const {username} = useParams();
 	const dispatch = useDispatch()
 	const {logedinUser} = useSelector(state=>state.auth)
-    const {userprofiledata} = useSelector(state=>state.usersprofile)
+    const {userprofiledata, imgupdate} = useSelector(state=>state.usersprofile)
 	const {allpostsdata, isLoading} = useSelector(state=>state.allposts)
 	const coverImgRef = useRef(null);
 	const profileImgRef = useRef(null);
@@ -32,7 +32,8 @@ const ProfilePage = () => {
 		}
 		
 	}, [ dispatch, username, feedType])
-     
+
+	
     const user = userprofiledata;
 	const okfollow = userprofiledata?.followers.includes(logedinUser?._id)
 
@@ -49,12 +50,16 @@ const ProfilePage = () => {
 	};
 
     const updateuserprofile = () => {
-		console.log("chl ra hai")
 		dispatch(updateuser({profileImg, coverImg}))
+		// if(imgupdate == false){
+		// setProfileImg(null);
+		// setCoverImg(null);
+		// }
 	}
 
 	return (
 		<>
+		   
 			<div className='flex-[4_4_0]  border-r border-gray-700 min-h-screen '>
 				{/* HEADER */}
 				{isLoading && <ProfileHeaderSkeleton />}
@@ -131,7 +136,7 @@ const ProfilePage = () => {
 										className='btn btn-primary rounded-full btn-sm text-white px-4 ml-2'
 										onClick={updateuserprofile}
 									>
-										Update
+										{imgupdate ? "Loding..." : "Update"}
 									</button>
 								)}
 							</div>
